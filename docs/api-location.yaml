@@ -16,7 +16,7 @@ paths:
       tags:
         - Localização
       parameters:
-        - name: name
+        - name: query
           in: query
           description: O nome da cidade para busca
           required: true
@@ -28,7 +28,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/City'
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
         '400':
           description: Erro de validação
           content:
@@ -132,9 +134,9 @@ components:
     Distance:
       type: object
       required:
-        - distanceInKilometers
+        - kilometers
       properties:
-        distanceInKilometers:
+        kilometers:
           type: number
           description: A distância em quilômetros (km)
           format: double
