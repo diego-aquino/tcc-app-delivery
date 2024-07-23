@@ -11,31 +11,17 @@ tags:
 paths:
   /cities:
     get:
-      summary: Listar cidades
-      operationId: cities/list
+      summary: Buscar cidades
+      operationId: cities/search
       tags:
         - Localização
       parameters:
         - name: name
           in: query
           description: O nome da cidade para busca
-          required: false
+          required: true
           schema:
             type: string
-        - name: page
-          in: query
-          description: O número da página
-          required: false
-          schema:
-            type: integer
-            default: 1
-        - name: perPage
-          in: query
-          description: O número de cidades por página
-          required: false
-          schema:
-            type: integer
-            default: 10
       responses:
         '200':
           description: Cidades encontradas
@@ -68,15 +54,15 @@ paths:
           description: O identificador da cidade de origem
           required: true
           schema:
-            type: integer
-          example: 1
+            type: string
+          example: aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDMwNjEy
         - name: destinationCityId
           in: query
           description: O identificador da cidade de destino
           required: true
           schema:
-            type: integer
-          example: 2
+            type: string
+          example: aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM2NjI4
       responses:
         '200':
           description: Distância encontrada
@@ -111,9 +97,9 @@ components:
         - id
       properties:
         id:
-          type: integer
+          type: string
           description: O identificador da cidade
-          example: 1
+          example: aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDMwNjEy
         name:
           type: string
           description: O nome da cidade
@@ -122,25 +108,33 @@ components:
           type: object
           description: O estado da cidade
           properties:
-            id:
-              type: integer
-              description: O identificador do estado
-              example: 2
             name:
               type: string
               description: O nome do estado
               example: São Paulo
-            country:
+            code:
               type: string
-              description: O país do estado
+              description: O código do estado
+              example: SP
+        country:
+          type: object
+          description: O país da cidade
+          properties:
+            name:
+              type: string
+              description: O nome do país
               example: Brasil
+            code:
+              type: string
+              description: O código do país
+              example: BRA
 
     Distance:
       type: object
       required:
-        - distance
+        - distanceInKilometers
       properties:
-        distance:
+        distanceInKilometers:
           type: number
           description: A distância em quilômetros (km)
           format: double
@@ -155,6 +149,12 @@ components:
           type: string
           description: A mensagem de erro
           example: Entrada inválida
+        issues:
+          type: array
+          description: Os problemas de validação
+          items:
+            type: object
+            additionalProperties: true
 
     NotFoundError:
       type: object
