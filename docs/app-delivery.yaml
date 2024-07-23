@@ -1,0 +1,148 @@
+openapi: 3.1.0
+
+info:
+  title: App Entrega
+  version: 1.0.0
+servers:
+  - url: http://localhost:3001
+tags:
+  - name: Entregas
+
+paths:
+  /shipping/calculate:
+    get:
+      summary: Calcular o frete de uma entrega
+      operationId: shipping/calculate/get
+      tags:
+        - Entregas
+      parameters:
+        - name: originCityName
+          in: query
+          description: O nome da cidade de origem
+          required: true
+          schema:
+            type: string
+            example: São Paulo
+        - name: destinationCityName
+          in: query
+          description: O nome da cidade de destino
+          required: true
+          schema:
+            type: string
+            example: Londres
+        - name: weight
+          in: query
+          description: O peso da entrega em quilogramas (kg)
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 5.3
+        - name: volume
+          in: query
+          description: O volume da entrega em metros cúbicos (m³)
+          required: true
+          schema:
+            type: number
+            format: double
+            example: 0.01
+      responses:
+        '200':
+          description: Frete calculado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingCost'
+        '400':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+        '404':
+          description: Não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundError'
+        '5XX':
+          description: Erro inesperado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InternalServerError'
+
+components:
+  schemas:
+    ShippingCost:
+      type: object
+      required:
+        - originCity
+        - destinationCity
+        - distance
+        - cost
+      properties:
+        originCity:
+          type: object
+          description: A cidade de origem
+          properties:
+            id:
+              type: integer
+              description: O identificador da cidade
+              example: 1
+            name:
+              type: string
+              description: O nome da cidade
+              example: São Paulo
+        destinationCity:
+          type: object
+          description: A cidade de destino
+          properties:
+            id:
+              type: integer
+              description: O identificador da cidade
+              example: 2
+            name:
+              type: string
+              description: O nome da cidade
+              example: Londres
+        distance:
+          type: number
+          description: A distância em quilômetros (km)
+          format: double
+          example: 145.3
+        cost:
+          type: number
+          description: O custo do frete em reais (BRL)
+          format: double
+          example: 72.5
+
+    ValidationError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: A mensagem de erro
+          example: Entrada inválida
+
+    NotFoundError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: A mensagem de erro
+          example: Item não encontrado
+
+    InternalServerError:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: A mensagem de erro
+          example: Erro inesperado
