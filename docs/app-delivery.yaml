@@ -1,10 +1,8 @@
 openapi: 3.1.0
 
 info:
-  title: App Entrega
+  title: App de Entregas
   version: 1.0.0
-servers:
-  - url: http://localhost:3001
 tags:
   - name: Entregas
 
@@ -83,39 +81,49 @@ components:
         - cost
       properties:
         originCity:
-          type: object
-          description: A cidade de origem
-          properties:
-            id:
-              type: integer
-              description: O identificador da cidade
-              example: 1
-            name:
-              type: string
-              description: O nome da cidade
-              example: São Paulo
+          $ref: '#/components/schemas/ShippingCity'
         destinationCity:
-          type: object
-          description: A cidade de destino
-          properties:
-            id:
-              type: integer
-              description: O identificador da cidade
-              example: 2
-            name:
-              type: string
-              description: O nome da cidade
-              example: Londres
-        distance:
+          $ref: '#/components/schemas/ShippingCity'
+        distanceInKilometers:
           type: number
           description: A distância em quilômetros (km)
           format: double
           example: 145.3
-        cost:
+        costInCents:
           type: number
-          description: O custo do frete em reais (BRL)
+          description: O custo do frete em centavos
           format: double
-          example: 72.5
+          example: 7250
+
+    ShippingCity:
+      type: object
+      required:
+        - id
+        - name
+        - position
+      properties:
+        id:
+          type: integer
+          description: O identificador da cidade
+          example: 1
+        name:
+          type: string
+          description: O nome da cidade
+          example: São Paulo
+        position:
+          type: object
+          description: A posição geográfica da cidade
+          properties:
+            latitude:
+              type: number
+              description: A latitude da cidade
+              format: double
+              example: -3.5505199
+            longitude:
+              type: number
+              description: A longitude da cidade
+              format: double
+              example: -6.6333094
 
     ValidationError:
       type: object
