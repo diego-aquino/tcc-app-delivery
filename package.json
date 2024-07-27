@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "dotenv -c development -- tsx watch src/index.ts",
+    "test": "dotenv -c test -- dotenv -c development -- vitest",
     "types:check": "tsc --noEmit"
   },
   "dependencies": {
@@ -14,9 +15,12 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/supertest": "^6.0.2",
     "msw": "^2.3.4",
+    "supertest": "^7.0.0",
     "tsx": "^4.16.2",
     "typescript": "^5.5.4",
+    "vitest": "^2.0.4",
     "zimic": "^0.8.2"
   }
 }

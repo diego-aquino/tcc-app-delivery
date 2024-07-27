@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { FastifyError, FastifyRequest, FastifyReply } from 'fastify';
 import { ZodError } from 'zod';
-import server from './server';
+import app from './app';
 
 export function handleServerError(
   error: FastifyError,
@@ -21,12 +21,12 @@ export function handleServerError(
       data: error.response?.data as unknown,
     };
 
-    server.log.error({
+    app.log.error({
       message: 'Request error',
       error: formattedError,
     });
   } else {
-    server.log.error({
+    app.log.error({
       message: 'Internal server error',
       error,
     });

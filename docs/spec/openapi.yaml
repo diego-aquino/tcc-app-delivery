@@ -20,14 +20,14 @@ paths:
           required: true
           schema:
             type: string
-            example: São Paulo
+            example: São Paulo, SP
         - name: destinationCityName
           in: query
           description: O nome da cidade de destino
           required: true
           schema:
             type: string
-            example: Londres
+            example: Recife, PE
         - name: weightInKilograms
           in: query
           description: O peso da entrega em quilogramas (kg)
@@ -75,6 +75,7 @@ components:
     ShippingCost:
       type: object
       required:
+        - distanceInKilometers
         - costInCents
       properties:
         distanceInKilometers:
@@ -87,21 +88,6 @@ components:
           description: O custo do frete em reais
           format: double
           example: 7250
-
-    ShippingCity:
-      type: object
-      required:
-        - id
-        - name
-      properties:
-        id:
-          type: integer
-          description: O identificador da cidade
-          example: 1
-        name:
-          type: string
-          description: O nome da cidade
-          example: São Paulo
 
     ValidationError:
       type: object

@@ -4,20 +4,31 @@ import LocationClient from './services/location';
 import { handleServerError } from './errors';
 import { calculateShippingCost } from './shipping';
 
-const server = fastify({ logger: true });
+const app = fastify({
+  logger: true,
+  disableRequestLogging: process.env.NODE_ENV === 'test',
+});
 
 const api = {
   location: new LocationClient(),
 };
 
 const calculateShippingCostSchema = z.object({
+  /** O nome da cidade de origem. */
   originCityName: z.string().min(1),
+  /** O nome da cidade de destino. */
   destinationCityName: z.string().min(1),
+  /** O peso da encomenda em quilogramas (km). */
   weightInKilograms: z.coerce.number().positive(),
+  /** O volume da encomenda em litros (L). */
   volumeInLiters: z.coerce.number().positive(),
 });
 
-server.get('/shipping/calculate', async (request, reply) => {
+export type CalculateShippingCostQuery = z.infer<
+  typeof calculateShippingCostSchema
+>;
+
+app.get('/shipping/calculate', async (request, reply) => {
   const {
     originCityName,
     destinationCityName,
@@ -59,6 +70,6 @@ server.get('/shipping/calculate', async (request, reply) => {
   });
 });
 
-server.setErrorHandler(handleServerError);
+app.setErrorHandler(handleServerError);
 
-export default server;
+export default app;
