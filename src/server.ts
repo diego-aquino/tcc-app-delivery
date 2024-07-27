@@ -1,7 +1,8 @@
 import fastify from 'fastify';
 import { z } from 'zod';
-import LocationClient, { LocationCity } from './services/location';
+import LocationClient from './services/location';
 import { handleServerError } from './errors';
+import { calculateShippingCost } from './shipping';
 
 const server = fastify({ logger: true });
 
@@ -15,34 +16,6 @@ const calculateShippingCostSchema = z.object({
   weightInKilograms: z.coerce.number().positive(),
   volumeInLiters: z.coerce.number().positive(),
 });
-
-const SHIPPING_COST_BY_KILOMETER = 1 / 50; // R$ 1,00 a cada 50 km
-const SHIPPING_COST_BY_KILOGRAM = 1 / 0.5; // R$ 1,00 a cada 500 g
-const SHIPPING_COST_BY_LITER = 1 / 1; // R$ 1,00 a cada 1 L
-
-function calculateShippingCost(
-  originCity: LocationCity,
-  destinationCity: LocationCity,
-  distanceInKilometers: number,
-  weightInKilograms: number,
-  volumeInLiters: number,
-) {
-  const haveSameState =
-    originCity.stateCode === destinationCity.stateCode &&
-    originCity.countryCode === destinationCity.countryCode;
-
-  if (haveSameState) {
-    return 0;
-  }
-
-  const cost =
-    distanceInKilometers * SHIPPING_COST_BY_KILOMETER +
-    weightInKilograms * SHIPPING_COST_BY_KILOGRAM +
-    volumeInLiters * SHIPPING_COST_BY_LITER;
-
-  const costInCents = Math.ceil(cost * 100);
-  return costInCents;
-}
 
 server.get('/shipping/calculate', async (request, reply) => {
   const {
