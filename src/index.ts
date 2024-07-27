@@ -1,5 +1,5 @@
-import app from './app';
-import { loadSwagger } from './swagger';
+import app from './server/app';
+import { loadSwagger } from './server/swagger';
 
 loadSwagger().then(async () => {
   await app.listen({

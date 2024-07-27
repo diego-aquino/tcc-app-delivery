@@ -1,8 +1,8 @@
 import fastify from 'fastify';
 import { z } from 'zod';
-import LocationClient from './services/location';
+import LocationClient from '../clients/location';
 import { handleServerError } from './errors';
-import { calculateShippingCost } from './shipping';
+import { calculateShippingCost } from '../utils/shipping';
 
 const app = fastify({
   logger: true,
@@ -13,20 +13,14 @@ const api = {
   location: new LocationClient(),
 };
 
-const calculateShippingCostSchema = z.object({
-  /** O nome da cidade de origem. */
+const calculateShippingSchema = z.object({
   originCityName: z.string().min(1),
-  /** O nome da cidade de destino. */
   destinationCityName: z.string().min(1),
-  /** O peso da encomenda em quilogramas (km). */
   weightInKilograms: z.coerce.number().positive(),
-  /** O volume da encomenda em litros (L). */
   volumeInLiters: z.coerce.number().positive(),
 });
 
-export type CalculateShippingCostQuery = z.infer<
-  typeof calculateShippingCostSchema
->;
+export type CalculateShippingQuery = z.infer<typeof calculateShippingSchema>;
 
 app.get('/shipping/calculate', async (request, reply) => {
   const {
@@ -34,7 +28,7 @@ app.get('/shipping/calculate', async (request, reply) => {
     destinationCityName,
     weightInKilograms,
     volumeInLiters,
-  } = calculateShippingCostSchema.parse(request.query);
+  } = calculateShippingSchema.parse(request.query);
 
   const [originCities, destinationCities] = await Promise.all([
     api.location.searchCities(originCityName),

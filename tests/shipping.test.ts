@@ -9,7 +9,7 @@ import {
   test,
 } from 'vitest';
 
-import app, { CalculateShippingCostQuery } from '../src/app';
+import app, { CalculateShippingQuery } from '../src/server/app';
 
 describe('Shipping', () => {
   beforeAll(async () => {
@@ -35,7 +35,7 @@ describe('Shipping', () => {
         destinationCityName: 'Recife, PE',
         weightInKilograms: 10,
         volumeInLiters: 0.1,
-      } satisfies CalculateShippingCostQuery);
+      } satisfies CalculateShippingQuery);
 
     expect(response.status).toBe(200);
   });
