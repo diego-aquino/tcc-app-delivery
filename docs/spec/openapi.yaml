@@ -28,7 +28,7 @@ paths:
           schema:
             type: string
             example: Londres
-        - name: weight
+        - name: weightInKilograms
           in: query
           description: O peso da entrega em quilogramas (kg)
           required: true
@@ -36,14 +36,14 @@ paths:
             type: number
             format: double
             example: 5.3
-        - name: volume
+        - name: volumeInLiters
           in: query
-          description: O volume da entrega em metros cúbicos (m³)
+          description: O volume da entrega em litros (L)
           required: true
           schema:
             type: number
             format: double
-            example: 0.01
+            example: 0.1
       responses:
         '200':
           description: Frete calculado
@@ -75,15 +75,8 @@ components:
     ShippingCost:
       type: object
       required:
-        - originCity
-        - destinationCity
-        - distance
-        - cost
+        - costInCents
       properties:
-        originCity:
-          $ref: '#/components/schemas/ShippingCity'
-        destinationCity:
-          $ref: '#/components/schemas/ShippingCity'
         distanceInKilometers:
           type: number
           description: A distância em quilômetros (km)
@@ -91,7 +84,7 @@ components:
           example: 145.3
         costInCents:
           type: number
-          description: O custo do frete em centavos
+          description: O custo do frete em reais
           format: double
           example: 7250
 
@@ -100,7 +93,6 @@ components:
       required:
         - id
         - name
-        - position
       properties:
         id:
           type: integer
@@ -110,20 +102,6 @@ components:
           type: string
           description: O nome da cidade
           example: São Paulo
-        position:
-          type: object
-          description: A posição geográfica da cidade
-          properties:
-            latitude:
-              type: number
-              description: A latitude da cidade
-              format: double
-              example: -3.5505199
-            longitude:
-              type: number
-              description: A longitude da cidade
-              format: double
-              example: -6.6333094
 
     ValidationError:
       type: object
