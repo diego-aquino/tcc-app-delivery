@@ -14,7 +14,14 @@ import {
 import app, { CalculateShippingQuery } from '../src/server/app';
 import { LocationCity } from '../src/clients/location';
 
-const interceptorServer = setupServer();
+const interceptorServer = setupServer(
+  http.get(`${process.env.LOCATION_API_URL}/cities`, () => {
+    return Response.json([]);
+  }),
+  http.get(`${process.env.LOCATION_API_URL}/cities/distances`, () => {
+    return new Response(null, { status: 404 });
+  }),
+);
 
 describe('Shipping', () => {
   beforeAll(async () => {
@@ -262,7 +269,10 @@ describe('Shipping', () => {
 
     interceptorServer.use(
       http.get(`${process.env.LOCATION_API_URL}/cities`, () => {
-        return new Response(null, { status: 500 });
+        return Response.json(
+          { message: 'Internal server error' },
+          { status: 500 },
+        );
       }),
     );
 
