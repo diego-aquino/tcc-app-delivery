@@ -29,7 +29,17 @@ describe('Shipping', () => {
     await app.ready();
   });
 
-  beforeEach(async () => {});
+  beforeEach(async () => {
+    locationInterceptor.get('/cities').respond({
+      status: 200,
+      body: [],
+    });
+
+    locationInterceptor.get('/cities/distances').respond({
+      status: 404,
+      body: { message: 'Not found' },
+    });
+  });
 
   afterEach(async () => {
     locationInterceptor.clear();
