@@ -29,18 +29,14 @@ describe('Shipping', () => {
     saoPaulo: {
       id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
       name: 'São Paulo',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
+      state: { name: 'São Paulo', code: 'SP' },
+      country: { name: 'Brasil', code: 'BRA' },
     },
     recife: {
       id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDI4NjQ3',
       name: 'Recife',
-      stateName: 'Pernambuco',
-      stateCode: 'PE',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
+      state: { name: 'Pernambuco', code: 'PE' },
+      country: { name: 'Brasil', code: 'BRA' },
     },
   } satisfies Record<string, LocationCity>;
 
@@ -56,10 +52,12 @@ describe('Shipping', () => {
       body: [],
     });
 
-    locationInterceptor.get('/cities/distances').respond({
-      status: 404,
-      body: { message: 'Not found' },
-    });
+    locationInterceptor
+      .get('/cities/:originId/distances/cities/:destinationId')
+      .respond({
+        status: 404,
+        body: { message: 'Not found' },
+      });
   });
 
   afterEach(async () => {
@@ -102,13 +100,7 @@ describe('Shipping', () => {
     const distanceInKilometers = 83.9;
 
     const distanceGetHandler = locationInterceptor
-      .get('/cities/distances')
-      .with({
-        searchParams: {
-          originCityId: originCity.id,
-          destinationCityId: destinationCity.id,
-        },
-      })
+      .get(`/cities/${originCity.id}/distances/cities/${destinationCity.id}`)
       .respond({
         status: 200,
         body: { kilometers: distanceInKilometers },
@@ -160,13 +152,7 @@ describe('Shipping', () => {
     const distanceInKilometers = 2133.1;
 
     const distanceGetHandler = locationInterceptor
-      .get('/cities/distances')
-      .with({
-        searchParams: {
-          originCityId: originCity.id,
-          destinationCityId: destinationCity.id,
-        },
-      })
+      .get(`/cities/${originCity.id}/distances/cities/${destinationCity.id}`)
       .respond({
         status: 200,
         body: { kilometers: distanceInKilometers },
@@ -217,7 +203,7 @@ describe('Shipping', () => {
       });
 
     const distanceGetHandler = locationInterceptor
-      .get('/cities/distances')
+      .get('/cities/:originId/distances/cities/:destinationId')
       .respond({
         status: 404,
         body: { message: 'Not found' },
@@ -252,7 +238,7 @@ describe('Shipping', () => {
     });
 
     const errorDistanceGetHandler = locationInterceptor
-      .get('/cities/distances')
+      .get('/cities/:originCityId/distances/cities/:destinationCityId')
       .respond({
         status: 500,
         body: { message: 'Internal server error' },

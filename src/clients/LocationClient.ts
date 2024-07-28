@@ -3,10 +3,14 @@ import axios, { AxiosInstance } from 'axios';
 export interface LocationCity {
   id: string;
   name?: string;
-  stateName?: string;
-  stateCode?: string;
-  countryName?: string;
-  countryCode?: string;
+  state: {
+    name?: string;
+    code?: string;
+  };
+  country: {
+    name?: string;
+    code?: string;
+  };
 }
 
 export interface LocationDistance {
@@ -37,12 +41,9 @@ class LocationClient {
     originCityId: string,
     destinationCityId: string,
   ) {
-    const response = await this.api.get<LocationDistance>('/cities/distances', {
-      params: {
-        originCityId,
-        destinationCityId,
-      },
-    });
+    const response = await this.api.get<LocationDistance>(
+      `/cities/${originCityId}/distances/cities/${destinationCityId}`,
+    );
 
     const distance = response.data;
     return distance;

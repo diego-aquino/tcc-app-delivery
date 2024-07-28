@@ -21,8 +21,8 @@ export function calculateShippingCost(
   volumeInLiters: number,
 ) {
   const haveSameState =
-    originCity.stateCode === destinationCity.stateCode &&
-    originCity.countryCode === destinationCity.countryCode;
+    originCity.state.code === destinationCity.state.code &&
+    originCity.country.code === destinationCity.country.code;
 
   if (haveSameState) {
     return 0;

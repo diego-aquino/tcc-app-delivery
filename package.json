@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "dotenv -c development -- tsx watch --clear-screen=false src/index.ts",
     "test": "dotenv -c test -- dotenv -c development -- vitest",
-    "typegen:location": "zimic typegen openapi https://v1-location-d8b1dd3.vercel.app/json --output src/types/location.generated.ts --service-name Location",
+    "typegen:location": "zimic typegen openapi https://v2-location-d8b1dd3.vercel.app/json --output src/types/location.generated.ts --service-name Location",
     "types:check": "tsc --noEmit"
   },
   "dependencies": {

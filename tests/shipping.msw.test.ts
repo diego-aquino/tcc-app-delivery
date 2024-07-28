@@ -30,18 +30,14 @@ describe('Shipping', () => {
     saoPaulo: {
       id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
       name: 'São Paulo',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
+      state: { name: 'São Paulo', code: 'SP' },
+      country: { name: 'Brasil', code: 'BRA' },
     },
     recife: {
       id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDI4NjQ3',
       name: 'Recife',
-      stateName: 'Pernambuco',
-      stateCode: 'PE',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
+      state: { name: 'Pernambuco', code: 'PE' },
+      country: { name: 'Brasil', code: 'BRA' },
     },
   } satisfies Record<string, LocationCity>;
 
@@ -100,18 +96,10 @@ describe('Shipping', () => {
     const distanceInKilometers = 83.9;
 
     interceptorServer.use(
-      http.get(`${LOCATION_API_URL}/cities/distances`, ({ request }) => {
-        const url = new URL(request.url);
-
-        if (
-          url.searchParams.get('originCityId') === originCity.id &&
-          url.searchParams.get('destinationCityId') === destinationCity.id
-        ) {
-          return Response.json({ kilometers: distanceInKilometers });
-        }
-
-        return Response.json({ message: 'Not found' }, { status: 404 });
-      }),
+      http.get(
+        `${LOCATION_API_URL}/cities/${originCity.id}/distances/cities/${destinationCity.id}`,
+        () => Response.json({ kilometers: distanceInKilometers }),
+      ),
     );
 
     const response = await supertest(app.server)
@@ -152,18 +140,10 @@ describe('Shipping', () => {
     const distanceInKilometers = 2133.1;
 
     interceptorServer.use(
-      http.get(`${LOCATION_API_URL}/cities/distances`, ({ request }) => {
-        const url = new URL(request.url);
-
-        if (
-          url.searchParams.get('originCityId') === originCity.id &&
-          url.searchParams.get('destinationCityId') === destinationCity.id
-        ) {
-          return Response.json({ kilometers: distanceInKilometers });
-        }
-
-        return Response.json({ message: 'Not found' }, { status: 404 });
-      }),
+      http.get(
+        `${LOCATION_API_URL}/cities/${originCity.id}/distances/cities/${destinationCity.id}`,
+        () => Response.json({ kilometers: distanceInKilometers }),
+      ),
     );
 
     const response = await supertest(app.server)
