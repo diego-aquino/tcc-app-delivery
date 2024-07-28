@@ -51,9 +51,10 @@ A URL da API de localização está declarada no arquivo
 | v1     | https://v1-location-d8b1dd3.vercel.app |
 | v2     | https://v2-location-d8b1dd3.vercel.app |
 
-> ![TIP]
+> [!TIP]
 >
-> Você pode acessar os links acima para ver a documentação da API.
+> Você pode acessar os links acima para ver a documentação de cada versão da
+> API.
 
 ## 3. Atividade
 
