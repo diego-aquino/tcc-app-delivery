@@ -4,6 +4,15 @@ const SHIPPING_COST_BY_KILOMETER = 1 / 50; // R$ 1,00 a cada 50 km
 const SHIPPING_COST_BY_KILOGRAM = 1 / 0.5; // R$ 1,00 a cada 500 g
 const SHIPPING_COST_BY_LITER = 1 / 1; // R$ 1,00 a cada 1 L
 
+/**
+ * Calcula o custo de frete entre duas cidades.
+ *
+ * Se ambas as cidades estiverem no mesmo estado, o custo é zero.
+ *
+ * Se as cidades estiverem em estados diferentes, o custo em centavos é
+ * calculado com base na distância entre as cidades e no peso e volume do
+ * produto.
+ */
 export function calculateShippingCost(
   originCity: LocationCity,
   destinationCity: LocationCity,
