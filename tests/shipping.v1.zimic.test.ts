@@ -29,10 +29,14 @@ describe('Shipping', () => {
   });
 
   beforeEach(async () => {
-    locationInterceptor.get('/cities').respond({ status: 200, body: [] });
-    locationInterceptor
-      .get('/cities/distances')
-      .respond({ status: 404, body: { message: 'Not found' } });
+    locationInterceptor.get('/cities').respond({
+      status: 200,
+      body: [],
+    });
+    locationInterceptor.get('/cities/distances').respond({
+      status: 404,
+      body: { message: 'Not found' },
+    });
   });
 
   afterEach(async () => {
@@ -91,12 +95,18 @@ describe('Shipping', () => {
     locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: originCitySearchName } })
-      .respond({ status: 200, body: [originCity] });
+      .respond({
+        status: 200,
+        body: [originCity],
+      });
 
     locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: destinationCitySearchName } })
-      .respond({ status: 200, body: [destinationCity] });
+      .respond({
+        status: 200,
+        body: [destinationCity],
+      });
 
     const distanceInKilometers = 83.9;
 
@@ -159,12 +169,18 @@ describe('Shipping', () => {
     locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: originCitySearchName } })
-      .respond({ status: 200, body: [originCity] });
+      .respond({
+        status: 200,
+        body: [originCity],
+      });
 
     locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: destinationCitySearchName } })
-      .respond({ status: 200, body: [destinationCity] });
+      .respond({
+        status: 200,
+        body: [destinationCity],
+      });
 
     const distanceInKilometers = 2133.1;
 
@@ -218,7 +234,10 @@ describe('Shipping', () => {
     locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: originCitySearchName } })
-      .respond({ status: 200, body: [originCity] });
+      .respond({
+        status: 200,
+        body: [originCity],
+      });
 
     const response = await supertest(app.server)
       .get('/shipping/calculate')
@@ -246,7 +265,10 @@ describe('Shipping', () => {
     locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: originCitySearchName } })
-      .respond({ status: 500, body: { message: 'Internal server error' } });
+      .respond({
+        status: 500,
+        body: { message: 'Internal server error' },
+      });
 
     const response = await supertest(app.server)
       .get('/shipping/calculate')
