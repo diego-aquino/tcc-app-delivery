@@ -19,6 +19,7 @@ httpInterceptor.default.onUnhandledRequest({ log: false });
 const locationInterceptor = httpInterceptor.create<LocationSchema>({
   type: 'local',
   baseURL: process.env.LOCATION_API_URL!,
+  saveRequests: true,
 });
 
 describe('Shipping', () => {
@@ -28,16 +29,7 @@ describe('Shipping', () => {
     await app.ready();
   });
 
-  beforeEach(async () => {
-    locationInterceptor.get('/cities').respond({
-      status: 200,
-      body: [],
-    });
-    locationInterceptor.get('/cities/distances').respond({
-      status: 404,
-      body: { message: 'Not found' },
-    });
-  });
+  beforeEach(async () => {});
 
   afterEach(async () => {
     locationInterceptor.clear();
@@ -92,7 +84,7 @@ describe('Shipping', () => {
       countryCode: 'BRA',
     } satisfies LocationCity;
 
-    locationInterceptor
+    const originCityListHandler = locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: originCitySearchName } })
       .respond({
@@ -100,7 +92,7 @@ describe('Shipping', () => {
         body: [originCity],
       });
 
-    locationInterceptor
+    const destinationCityListHandler = locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: destinationCitySearchName } })
       .respond({
@@ -110,7 +102,7 @@ describe('Shipping', () => {
 
     const distanceInKilometers = 83.9;
 
-    locationInterceptor
+    const distanceGetHandler = locationInterceptor
       .get('/cities/distances')
       .with({
         searchParams: {
@@ -137,6 +129,15 @@ describe('Shipping', () => {
       distanceInKilometers: distanceInKilometers,
       costInCents: 0,
     });
+
+    const originCityListRequests = originCityListHandler.requests();
+    expect(originCityListRequests).toHaveLength(1);
+
+    const destinationCityListRequests = destinationCityListHandler.requests();
+    expect(destinationCityListRequests).toHaveLength(1);
+
+    const distanceGetRequests = distanceGetHandler.requests();
+    expect(distanceGetRequests).toHaveLength(1);
   });
 
   /**
@@ -166,7 +167,7 @@ describe('Shipping', () => {
       countryCode: 'BRA',
     } satisfies LocationCity;
 
-    locationInterceptor
+    const originCityListHandler = locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: originCitySearchName } })
       .respond({
@@ -174,7 +175,7 @@ describe('Shipping', () => {
         body: [originCity],
       });
 
-    locationInterceptor
+    const destinationCityListHandler = locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: destinationCitySearchName } })
       .respond({
@@ -184,7 +185,7 @@ describe('Shipping', () => {
 
     const distanceInKilometers = 2133.1;
 
-    locationInterceptor
+    const distanceGetHandler = locationInterceptor
       .get('/cities/distances')
       .with({
         searchParams: {
@@ -211,6 +212,15 @@ describe('Shipping', () => {
       distanceInKilometers: distanceInKilometers,
       costInCents: 6277,
     });
+
+    const originCityListRequests = originCityListHandler.requests();
+    expect(originCityListRequests).toHaveLength(1);
+
+    const destinationCityListRequests = destinationCityListHandler.requests();
+    expect(destinationCityListRequests).toHaveLength(1);
+
+    const distanceGetRequests = distanceGetHandler.requests();
+    expect(distanceGetRequests).toHaveLength(1);
   });
 
   /**
@@ -231,12 +241,27 @@ describe('Shipping', () => {
 
     const destinationCitySearchName = 'Recife, PE';
 
-    locationInterceptor
+    const originCityListHandler = locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: originCitySearchName } })
       .respond({
         status: 200,
         body: [originCity],
+      });
+
+    const destinationCityListHandler = locationInterceptor
+      .get('/cities')
+      .with({ searchParams: { query: destinationCitySearchName } })
+      .respond({
+        status: 200,
+        body: [],
+      });
+
+    const distanceGetHandler = locationInterceptor
+      .get('/cities/distances')
+      .respond({
+        status: 404,
+        body: { message: 'Not found' },
       });
 
     const response = await supertest(app.server)
@@ -252,6 +277,15 @@ describe('Shipping', () => {
     expect(response.body).toEqual({
       message: 'Destination city not found',
     });
+
+    const originCityListRequests = originCityListHandler.requests();
+    expect(originCityListRequests).toHaveLength(1);
+
+    const destinationCityListRequests = destinationCityListHandler.requests();
+    expect(destinationCityListRequests).toHaveLength(1);
+
+    const distanceGetRequests = distanceGetHandler.requests();
+    expect(distanceGetRequests).toHaveLength(0);
   });
 
   /**
@@ -262,9 +296,24 @@ describe('Shipping', () => {
     const originCitySearchName = 'São Paulo, SP';
     const destinationCitySearchName = 'Recife, PE';
 
-    locationInterceptor
+    const originCityListHandler = locationInterceptor
       .get('/cities')
       .with({ searchParams: { query: originCitySearchName } })
+      .respond({
+        status: 500,
+        body: { message: 'Internal server error' },
+      });
+
+    const destinationCityListHandler = locationInterceptor
+      .get('/cities')
+      .with({ searchParams: { query: destinationCitySearchName } })
+      .respond({
+        status: 500,
+        body: { message: 'Internal server error' },
+      });
+
+    const distanceGetHandler = locationInterceptor
+      .get('/cities/distances')
       .respond({
         status: 500,
         body: { message: 'Internal server error' },
@@ -283,5 +332,14 @@ describe('Shipping', () => {
     expect(response.body).toEqual({
       message: 'Internal server error',
     });
+
+    const originCityListRequests = originCityListHandler.requests();
+    expect(originCityListRequests).toHaveLength(1);
+
+    const destinationCityListRequests = destinationCityListHandler.requests();
+    expect(destinationCityListRequests).toHaveLength(1);
+
+    const distanceGetRequests = distanceGetHandler.requests();
+    expect(distanceGetRequests).toHaveLength(0);
   });
 });
