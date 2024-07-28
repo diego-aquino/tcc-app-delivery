@@ -130,14 +130,9 @@ describe('Shipping', () => {
       costInCents: 0,
     });
 
-    const originCityListRequests = originCityListHandler.requests();
-    expect(originCityListRequests).toHaveLength(1);
-
-    const destinationCityListRequests = destinationCityListHandler.requests();
-    expect(destinationCityListRequests).toHaveLength(1);
-
-    const distanceGetRequests = distanceGetHandler.requests();
-    expect(distanceGetRequests).toHaveLength(1);
+    expect(originCityListHandler.requests()).toHaveLength(1);
+    expect(destinationCityListHandler.requests()).toHaveLength(1);
+    expect(distanceGetHandler.requests()).toHaveLength(1);
   });
 
   /**
@@ -213,14 +208,9 @@ describe('Shipping', () => {
       costInCents: 6277,
     });
 
-    const originCityListRequests = originCityListHandler.requests();
-    expect(originCityListRequests).toHaveLength(1);
-
-    const destinationCityListRequests = destinationCityListHandler.requests();
-    expect(destinationCityListRequests).toHaveLength(1);
-
-    const distanceGetRequests = distanceGetHandler.requests();
-    expect(distanceGetRequests).toHaveLength(1);
+    expect(originCityListHandler.requests()).toHaveLength(1);
+    expect(destinationCityListHandler.requests()).toHaveLength(1);
+    expect(distanceGetHandler.requests()).toHaveLength(1);
   });
 
   /**
@@ -278,14 +268,9 @@ describe('Shipping', () => {
       message: 'Destination city not found',
     });
 
-    const originCityListRequests = originCityListHandler.requests();
-    expect(originCityListRequests).toHaveLength(1);
-
-    const destinationCityListRequests = destinationCityListHandler.requests();
-    expect(destinationCityListRequests).toHaveLength(1);
-
-    const distanceGetRequests = distanceGetHandler.requests();
-    expect(distanceGetRequests).toHaveLength(0);
+    expect(originCityListHandler.requests()).toHaveLength(1);
+    expect(destinationCityListHandler.requests()).toHaveLength(1);
+    expect(distanceGetHandler.requests()).toHaveLength(0);
   });
 
   /**
@@ -333,13 +318,8 @@ describe('Shipping', () => {
       message: 'Internal server error',
     });
 
-    const originCityListRequests = originCityListHandler.requests();
-    expect(originCityListRequests).toHaveLength(1);
-
-    const destinationCityListRequests = destinationCityListHandler.requests();
-    expect(destinationCityListRequests).toHaveLength(1);
-
-    const distanceGetRequests = distanceGetHandler.requests();
-    expect(distanceGetRequests).toHaveLength(0);
+    expect(originCityListHandler.requests()).toHaveLength(1);
+    expect(destinationCityListHandler.requests()).toHaveLength(1);
+    expect(distanceGetHandler.requests()).toHaveLength(0);
   });
 });

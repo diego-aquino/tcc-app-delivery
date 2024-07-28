@@ -19,7 +19,7 @@ const interceptorServer = setupServer(
     return Response.json([]);
   }),
   http.get(`${process.env.LOCATION_API_URL}/cities/distances`, () => {
-    return new Response(null, { status: 404 });
+    return Response.json({ message: 'Not found' }, { status: 404 });
   }),
 );
 
@@ -115,7 +115,7 @@ describe('Shipping', () => {
             return Response.json({ kilometers: distanceInKilometers });
           }
 
-          return new Response(null, { status: 404 });
+          return Response.json({ message: 'Not found' }, { status: 404 });
         },
       ),
     );
@@ -193,7 +193,7 @@ describe('Shipping', () => {
             return Response.json({ kilometers: distanceInKilometers });
           }
 
-          return new Response(null, { status: 404 });
+          return Response.json({ message: 'Not found' }, { status: 404 });
         },
       ),
     );
