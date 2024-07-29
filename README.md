@@ -32,7 +32,7 @@ Este projeto utiliza [Node.js](https://nodejs.org) com
 [TypeScript](https://www.typescriptlang.org), [Fastify](https://fastify.dev),
 [Axios](https://axios-http.com) e [Vitest](https://vitest.dev).
 
-Alguns arquivos importantes:
+Arquivos importantes:
 
 - [`src/server/app.ts`](./src/server/app.ts): arquivo principal da aplicação
   onde o servidor está implementado.
@@ -42,6 +42,12 @@ Alguns arquivos importantes:
   cálculo do frete.
 - [`tests/shipping.test.ts`](./tests/shipping.test.ts): arquivo com os testes do
   cálculo do frete.
+
+Comandos úteis:
+
+- `npm run dev`: inicia o servidor em modo de desenvolvimento.
+- `npm run test`: executa os testes da aplicação.
+- `npm run types:check`: verifica se não há erros de tipagem no código.
 
 A URL da API de localização está declarada no arquivo
 [`.env.development`](./.env.development). Ela está disponível em duas versões:
