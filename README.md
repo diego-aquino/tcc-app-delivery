@@ -24,7 +24,7 @@ e terminal no centro e um mini-navegador no lado direito.
 No canto superior esquerdo, clique em "Fork" para salvar o projeto no seu perfil
 do Stackblitz. Você precisará fazer login.
 
-![Botão para cópia do projeto no Stackblitz](docs/images/stackblitz-fork.png)
+![Botão para cópia do projeto no Stackblitz](./docs/images/stackblitz-fork.png)
 
 ## 2. Estrutura
 
@@ -63,9 +63,9 @@ A URL da API de localização está declarada no arquivo
 Na primeira parte da atividade, você implementará uma suite de testes para esta
 aplicação. Você deve utilizar **uma** das duas ferramentas de mocks de API
 planejadas, [MSW](https://mswjs.io) ou
-[Zimic](https://github.com/zimicjs/zimic), de acordo com a sua alocação
-[nesta planilha](). A API de localização não deve ser acessada durante os
-testes, que utilizarão os mocks para simular as respostas da API.
+[Zimic](https://github.com/zimicjs/zimic), de acordo com a sua alocação para o
+App de Delivery [nesta planilha](). A API de localização não deve ser acessada
+durante os testes, que utilizarão os mocks para simular as respostas da API.
 
 @TODO ADICIONAR LINK DA PLANILHA
 
@@ -73,23 +73,28 @@ Os testes devem ser implementados em
 [`tests/shipping.test.ts`](./tests/shipping.test.ts). Esse arquivo já possui um
 exemplo de teste e stubs dos quatro casos a serem implementados:
 
-1. Deve retornar um frete gratuito quando as duas cidades estão no mesmo estado.
+1. Deve retornar um frete gratuito quando as duas cidades estão no mesmo estado;
 2. Deve retornar o valor correto do frete entre duas cidades que não estão no
-   mesmo estado.
-3. Deve retornar uma resposta de erro quando alguma cidade não foi encontrada.
+   mesmo estado;
+3. Deve retornar uma resposta de erro quando alguma cidade não foi encontrada;
 4. Deve retornar uma resposta de erro quando não for possível utilizar a API de
    localização por um erro desconhecido.
 
 Para executar os testes, utilize o comando `npm run test`. Ao realizar mudanças
 na aplicação ou nos testes, a suite será executada automaticamente.
 
-![Executando os testes no Stackblitz](docs/images/stackblitz-tests.png)
+![Executando os testes no Stackblitz](./docs/images/stackblitz-tests.png)
+
+> [!IMPORTANT]
+>
+> É esperado que a API de localização não seja acessada durante a execução
+> testes, que utilizarão os mocks para simular as respostas da API.
 
 Após implementar os casos descritos acima, salve o link de compartilhamento do
 projeto. Você deverá enviá-lo no formulário de entrega. Confirme que o link está
 com visibilidade pública.
 
-![Compartilhando o projeto no Stackblitz](docs/images/stackblitz-sharing.png)
+![Compartilhando o projeto no Stackblitz](./docs/images/stackblitz-sharing.png)
 
 ### Parte 2: Adaptações após mudança na API de localização
 
@@ -100,7 +105,7 @@ Antes de iniciar, crie uma cópia do projeto que você utilizou na parte 1. Para
 isso, clique no botão "Fork" no canto superior. O objetivo é manter o projeto da
 parte 1 inalterado e utilizar uma cópia dele para migrar para a versão 2 da API.
 
-![Botão para cópia do projeto no Stackblitz](docs/images/stackblitz-refork.png)
+![Botão para cópia do projeto no Stackblitz](./docs/images/stackblitz-refork.png)
 
 Na cópia criada, você deve alterar o arquivo
 [`.env.development`](./.env.development) para utilizar a URL da versão 2 da API,
@@ -124,7 +129,7 @@ Entre as versões 1 e 2 da API, as seguintes modificações foram realizadas:
 - A rota `/cities/distances`, em que os identificadores das cidades origem e
   destino eram definidas por meio de parâmetros de query, foi modificada para
   `/cities/:originCityId}/distances/cities/:destinationCityId`, movendo os
-  identificadores para parâmetros de rota.
+  identificadores para parâmetros de rota;
 - No retorno das cidades, os seguintes campos foram modificados:
   - `stateName` e `stateCode` agora fazem parte de um objeto `state`, nas
     propriedades `state.name` e `state.code`, respectivamente.
@@ -142,7 +147,6 @@ atividade, juntamente com o link da parte 1.
 
 Após finalizar as implementações nesta aplicação e no
 [App de Compartilhamento](https://github.com/diego-aquino/api-mocking-app-sharing),
-preencha o formulário de entrega com os links dos projetos de cada parte 1 e
-parte 2.
+preencha o formulário de entrega com os links das partes 1 e 2.
 
 @TODO ADICIONAR LINK DO FORMULÁRIO
