@@ -35,10 +35,13 @@ app.get('/shipping/calculate', async (request, reply) => {
     api.location.searchCities(destinationCityName),
   ]);
 
-  if (originCities.length === 0) {
+  const originCityExists = originCities.length === 0;
+  if (originCityExists) {
     return reply.status(400).send({ message: 'Origin city not found' });
   }
-  if (destinationCities.length === 0) {
+
+  const destinationCityExists = destinationCities.length === 0;
+  if (destinationCityExists) {
     return reply.status(400).send({ message: 'Destination city not found' });
   }
 
