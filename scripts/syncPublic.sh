@@ -4,8 +4,10 @@ set -e
 
 cd ../api-mocking-app-delivery
 
-cp -r ../tcc-app-delivery .
-rm -rf tcc-app-delivery/.git
-cp -rT tcc-app-delivery .
-
-rm -rf tcc-app-delivery scripts
+rsync ../tcc-app-delivery/ . \
+  --archive \
+  --verbose \
+  --delete \
+  --exclude .git \
+  --exclude node_modules \
+  --exclude scripts
