@@ -24,9 +24,7 @@ describe('Shipping', () => {
     await app.close();
   });
 
-  /**
-   * Exemplo (para habilitar, remova o `.skip`)
-   */
+  // Exemplo (para habilitar, remova o `.skip`)
   test.skip('example', async () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
@@ -40,34 +38,18 @@ describe('Shipping', () => {
     expect(response.status).toBe(200);
   });
 
-  /**
-   * Teste 1: Deve retornar um frete gratuito quando as duas cidades estão no
-   * mesmo estado.
-   */
   test('case 1', async () => {
     // Implemente aqui...
   });
 
-  /**
-   * Teste 2: Deve retornar o valor correto do frete entre duas cidades que não
-   * estão no mesmo estado.
-   */
   test('case 2', async () => {
     // Implemente aqui...
   });
 
-  /**
-   * Teste 3: Deve retornar uma resposta de erro quando alguma cidade não foi
-   * encontrada.
-   */
   test('case 3', async () => {
     // Implemente aqui...
   });
 
-  /**
-   * Teste 4: Deve retornar uma resposta de erro quando não for possível
-   * utilizar a API de localização por um erro desconhecido.
-   */
   test('case 4', async () => {
     // Implemente aqui...
   });
