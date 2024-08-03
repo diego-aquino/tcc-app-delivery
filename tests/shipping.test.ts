@@ -24,8 +24,7 @@ describe('Shipping', () => {
     await app.close();
   });
 
-  // Exemplo (para habilitar, remova o `.skip`)
-  test.skip('example', async () => {
+  test.skip('exemplo', async () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
@@ -36,21 +35,22 @@ describe('Shipping', () => {
       } satisfies CalculateShippingQuery);
 
     expect(response.status).toBe(200);
+    console.log(response.body);
   });
 
-  test('case 1', async () => {
+  test('caso 1: <descrição curta do teste>', async () => {
     // Implemente aqui...
   });
 
-  test('case 2', async () => {
+  test('caso 2: <descrição curta do teste>', async () => {
     // Implemente aqui...
   });
 
-  test('case 3', async () => {
+  test('caso 3: <descrição curta do teste>', async () => {
     // Implemente aqui...
   });
 
-  test('case 4', async () => {
+  test('caso 4: <descrição curta do teste>', async () => {
     // Implemente aqui...
   });
 });
