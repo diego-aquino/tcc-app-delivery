@@ -8,9 +8,9 @@ reta entre elas, que é usada para calcular o valor do frete.
 
 ## 1. Acesso
 
-Primeiramente, abra este projeto no Stackblitz utilizando o link a seguir:
+Primeiramente, abra este projeto no Stackblitz:
 
-https://stackblitz.com/github/diego-aquino/api-mocking-app-delivery?startScript=dev&file=README.md
+[![Abrir no Stackblitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/diego-aquino/api-mocking-app-delivery?startScript=dev&file=README.md)
 
 Esse link abrirá um editor semelhante ao
 [VS Code](https://code.visualstudio.com) no seu navegador, instalará as
