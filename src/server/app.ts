@@ -1,6 +1,6 @@
 import fastify from 'fastify';
 import { z } from 'zod';
-import LocationClient from '../clients/location';
+import LocationClient from '../clients/LocationClient';
 import { handleServerError } from './errors';
 import { calculateShippingCost } from '../utils/shipping';
 

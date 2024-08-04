@@ -1,4 +1,4 @@
-import { LocationCity } from '../clients/location';
+import { LocationCity } from '../clients/LocationClient';
 
 const SHIPPING_COST_BY_KILOMETER = 1 / 50; // R$ 1,00 a cada 50 km
 const SHIPPING_COST_BY_KILOGRAM = 1 / 0.5; // R$ 1,00 a cada 500 g

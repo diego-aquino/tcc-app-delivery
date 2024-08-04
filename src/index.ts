@@ -1,8 +1,12 @@
 import app from './server/app';
-import { loadSwagger } from './server/swagger';
+import { loadPlugins } from './server/plugins';
 
-loadSwagger().then(async () => {
+async function startServer() {
+  await loadPlugins();
+
   await app.listen({
     port: Number(process.env.PORT),
   });
-});
+}
+
+startServer();
