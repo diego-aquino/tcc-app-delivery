@@ -22,7 +22,7 @@ e terminal no centro e um mini-navegador no lado direito.
 ![Projeto aberto no Stackblitz](./docs/images/project-opened-on-stackblitz.png)
 
 No canto superior esquerdo, clique em "Fork" para salvar o projeto no seu perfil
-do Stackblitz. Você precisará fazer login.
+do Stackblitz. Será necessário fazer login.
 
 ![Botão para cópia do projeto no Stackblitz](./docs/images/stackblitz-fork.png)
 
@@ -59,32 +59,25 @@ A URL da API de localização está declarada no arquivo
 
 > [!TIP]
 >
-> Você pode acessar os links acima para ver a documentação de cada versão da
-> API.
+> Acesse os links acima para ver a documentação de cada versão da API.
 
 ## 3. Atividade
 
 ### Parte 1: Criação de testes
 
-Na primeira parte da atividade, você implementará uma suite de testes para esta
+Na primeira parte da atividade, vamos implementar uma suite de testes para esta
 aplicação. Você deve utilizar **uma** das duas ferramentas de mocks de API
 planejadas, [MSW](https://mswjs.io) ou
 [Zimic](https://github.com/zimicjs/zimic), de acordo com a sua alocação para o
-App de Delivery [nesta planilha](). A API de localização não deve ser acessada
-durante os testes, que utilizarão os mocks para simular as respostas da API.
+App de Delivery [nesta planilha](). @TODO ADICIONAR LINK DA PLANILHA
 
-@TODO ADICIONAR LINK DA PLANILHA
+Você deverá implementar **quatro** casos de teste no arquivo
+[`tests/shipping.test.ts`](./tests/shipping.test.ts). A escolha de quais
+aspectos da aplicação testar é livre, contanto que:
 
-Os testes devem ser implementados em
-[`tests/shipping.test.ts`](./tests/shipping.test.ts). Esse arquivo já possui um
-exemplo de teste e stubs dos quatro casos a serem implementados:
-
-1. Deve retornar um frete gratuito quando as duas cidades estão no mesmo estado;
-2. Deve retornar o valor correto do frete entre duas cidades que não estão no
-   mesmo estado;
-3. Deve retornar uma resposta de erro quando alguma cidade não foi encontrada;
-4. Deve retornar uma resposta de erro quando não for possível utilizar a API de
-   localização por um erro desconhecido.
+1. Todos os quatros testes utilizem mocks de API;
+2. Pelo menos um caso de teste valide um fluxo de sucesso;
+3. Pelo menos um caso de teste valide um fluxo de erro.
 
 Para executar os testes, utilize o comando `npm run test`. Ao realizar mudanças
 na aplicação ou nos testes, a suite será executada automaticamente.
@@ -93,8 +86,8 @@ na aplicação ou nos testes, a suite será executada automaticamente.
 
 > [!IMPORTANT]
 >
-> É esperado que a API de localização não seja acessada durante a execução
-> testes, que utilizarão os mocks para simular as respostas da API.
+> Considerando os mocks de API, é esperado que a API de localização não seja
+> acessada durante a execução testes. Os mocks simularão as respostas da API.
 
 Após implementar os casos descritos acima, salve o link de compartilhamento do
 projeto. Você deverá enviá-lo no formulário de entrega. Confirme que o link está
@@ -142,8 +135,11 @@ Entre as versões 1 e 2 da API, as seguintes modificações foram realizadas:
   - `countryName` e `countryCode` agora fazem parte de um objeto `country`, nas
     propriedades `country.name` e `country.code`, respectivamente.
 
-Agora, você deve adaptar a aplicação, os testes e os mocks de API para lidar com
-essas mudanças.
+Agora, você deve adaptar os testes e os mocks de API para lidar com essas
+mudanças. Para executar a suite, naturalmente é necessário também alterar a
+aplicação para integrar à nova versão da API. Nesta atividade, o refatoramento
+da aplicação não é obrigatório, embora seja recomendado para verificar se os
+testes estão funcionando corretamente.
 
 Após realizar as adaptações, salve o link de compartilhamento do projeto usado
 nesta parte 2. Você também deverá enviá-lo no formulário de entrega ao final da
@@ -155,4 +151,4 @@ Após finalizar as implementações nesta aplicação e no
 [App de Compartilhamento](https://github.com/diego-aquino/api-mocking-app-sharing),
 preencha o formulário de entrega com os links das partes 1 e 2.
 
-@TODO ADICIONAR LINK DO FORMULÁRIO
+https://forms.gle/FP8gzzaBniawu6EV8
