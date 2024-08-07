@@ -53,13 +53,15 @@ app.get('/shipping/calculate', async (request, reply) => {
     destinationCity.id,
   );
 
-  const costInCents = calculateShippingCost(
+  const cost = calculateShippingCost(
     originCity,
     destinationCity,
     distance.kilometers,
     weightInKilograms,
     volumeInLiters,
   );
+
+  const costInCents = Math.ceil(cost * 100);
 
   return reply.status(200).send({
     distanceInKilometers: distance.kilometers,
