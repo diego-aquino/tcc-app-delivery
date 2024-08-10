@@ -1,7 +1,7 @@
 openapi: 3.1.0
 
 info:
-  title: App de Entregas
+  title: Sistema de Entregas
   version: 1.0.0
 tags:
   - name: Entregas

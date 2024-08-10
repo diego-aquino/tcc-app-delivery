@@ -36,7 +36,7 @@ Este é um projeto backend que utiliza [Node.js](https://nodejs.org) com
 
 Arquivos importantes:
 
-- [`src/server/app.ts`](./src/server/app.ts): arquivo principal da aplicação
+- [`src/server/app.ts`](./src/server/app.ts): arquivo principal da aplicação,
   onde o servidor está implementado.
 - [`src/clients/LocationClient.ts`](./src/clients/LocationClient.ts): classe que
   faz as chamadas HTTP para a API de localização.
@@ -47,11 +47,11 @@ Arquivos importantes:
 
 Comandos úteis:
 
-- `npm install`: instala as dependências do projeto (executado automaticamente
-  ao abrir o projeto no Stackblitz).
-- `npm run dev`: inicia o servidor em modo de desenvolvimento.
-- `npm run test`: executa os testes da aplicação em modo watch.
-- `npm run types:check`: verifica se não há erros de tipo no código.
+- `npm install`: instala as **dependências** do projeto (executado
+  automaticamente ao abrir o projeto no Stackblitz).
+- `npm run dev`: inicia o **servidor** em modo de desenvolvimento.
+- `npm run test`: executa os **testes** da aplicação em modo watch.
+- `npm run types:check`: verifica se há **erros de tipo** no código.
 
 A URL da API de localização está declarada no arquivo
 [`.env.development`](./.env.development). Ela está disponível em duas versões:
@@ -117,15 +117,11 @@ parte 1 inalterado e utilizar uma cópia dele para migrar para a versão 2 da AP
 
 Na cópia criada, você deve alterar o arquivo
 [`.env.development`](./.env.development) para utilizar a URL da versão 2 da API,
-comentando a linha 4 e descomentando a linha 5.
+atualizando o valor da variável `LOCATION_API_URL` para o endereço abaixo.
 
 `.env.development`:
 
 ```bash
-NODE_ENV=development
-PORT=3001
-
-# LOCATION_API_URL=https://v1-location-d8b1dd3.vercel.app
 LOCATION_API_URL=https://v2-location-d8b1dd3.vercel.app
 ```
 
