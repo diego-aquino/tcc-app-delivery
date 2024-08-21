@@ -14,18 +14,41 @@ import {
 import app, { CalculateShippingQuery } from '../src/server/app';
 import { LocationCity } from '../src/clients/LocationClient';
 
+const LOCATION_API_URL = process.env.LOCATION_API_URL;
+
 const interceptorServer = setupServer(
-  http.get(`${process.env.LOCATION_API_URL}/cities`, () => {
+  http.get(`${LOCATION_API_URL}/cities`, () => {
     return Response.json([]);
   }),
-  http.get(`${process.env.LOCATION_API_URL}/cities/distances`, () => {
+  http.get(`${LOCATION_API_URL}/cities/distances`, () => {
     return Response.json({ message: 'Not found' }, { status: 404 });
   }),
 );
 
 describe('Shipping', () => {
+  const cities = {
+    saoPaulo: {
+      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
+      name: 'São Paulo',
+      stateName: 'São Paulo',
+      stateCode: 'SP',
+      countryName: 'Brasil',
+      countryCode: 'BRA',
+    },
+    recife: {
+      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDI4NjQ3',
+      name: 'Recife',
+      stateName: 'Pernambuco',
+      stateCode: 'PE',
+      countryName: 'Brasil',
+      countryCode: 'BRA',
+    },
+  } satisfies Record<string, LocationCity>;
+
   beforeAll(async () => {
-    interceptorServer.listen({ onUnhandledRequest: 'bypass' });
+    interceptorServer.listen({
+      onUnhandledRequest: 'bypass',
+    });
 
     await app.ready();
   });
@@ -42,15 +65,12 @@ describe('Shipping', () => {
     interceptorServer.close();
   });
 
-  /**
-   * Exemplo (para habilitar, remova o `.skip`)
-   */
-  test.skip('example', async () => {
+  test.skip('exemplo', async () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: 'São Paulo, SP',
-        destinationCityName: 'Recife, PE',
+        originCityName: cities.saoPaulo.name,
+        destinationCityName: cities.recife.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -58,41 +78,18 @@ describe('Shipping', () => {
     expect(response.status).toBe(200);
   });
 
-  /**
-   * Teste 1: Deve retornar um frete gratuito quando as duas cidades estão no
-   * mesmo estado.
-   */
-  test('case 1', async () => {
-    const originCitySearchName = 'São Paulo, SP';
-
-    const originCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
-      name: 'São Paulo',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
-
-    const destinationCitySearchName = 'Campinas, SP';
-
-    const destinationCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5Mzgx',
-      name: 'Campinas',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
+  test('caso 1: deve retornar um frete gratuito quando as duas cidades estão no mesmo estado', async () => {
+    const originCity = cities.saoPaulo;
+    const destinationCity = originCity;
 
     interceptorServer.use(
-      http.get(`${process.env.LOCATION_API_URL}/cities`, ({ request }) => {
+      http.get(`${LOCATION_API_URL}/cities`, ({ request }) => {
         const url = new URL(request.url);
 
-        if (url.searchParams.get('query') === originCitySearchName) {
+        if (url.searchParams.get('query') === originCity.name) {
           return Response.json([originCity]);
         }
-        if (url.searchParams.get('query') === destinationCitySearchName) {
+        if (url.searchParams.get('query') === destinationCity.name) {
           return Response.json([destinationCity]);
         }
 
@@ -103,28 +100,25 @@ describe('Shipping', () => {
     const distanceInKilometers = 83.9;
 
     interceptorServer.use(
-      http.get(
-        `${process.env.LOCATION_API_URL}/cities/distances`,
-        ({ request }) => {
-          const url = new URL(request.url);
+      http.get(`${LOCATION_API_URL}/cities/distances`, ({ request }) => {
+        const url = new URL(request.url);
 
-          if (
-            url.searchParams.get('originCityId') === originCity.id &&
-            url.searchParams.get('destinationCityId') === destinationCity.id
-          ) {
-            return Response.json({ kilometers: distanceInKilometers });
-          }
+        if (
+          url.searchParams.get('originCityId') === originCity.id &&
+          url.searchParams.get('destinationCityId') === destinationCity.id
+        ) {
+          return Response.json({ kilometers: distanceInKilometers });
+        }
 
-          return Response.json({ message: 'Not found' }, { status: 404 });
-        },
-      ),
+        return Response.json({ message: 'Not found' }, { status: 404 });
+      }),
     );
 
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: originCitySearchName,
-        destinationCityName: destinationCitySearchName,
+        originCityName: originCity.name,
+        destinationCityName: destinationCity.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -136,41 +130,18 @@ describe('Shipping', () => {
     });
   });
 
-  /**
-   * Teste 2: Deve retornar o valor correto do frete entre duas cidades que não
-   * estão no mesmo estado.
-   */
-  test('case 2', async () => {
-    const originCitySearchName = 'São Paulo, SP';
-
-    const originCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
-      name: 'São Paulo',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
-
-    const destinationCitySearchName = 'Recife, PE';
-
-    const destinationCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDI4NjQ3',
-      name: 'Recife',
-      stateName: 'Pernambuco',
-      stateCode: 'PE',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
+  test('caso 2: deve retornar o valor correto do frete entre duas cidades que não estão no mesmo estado', async () => {
+    const originCity = cities.saoPaulo;
+    const destinationCity = cities.recife;
 
     interceptorServer.use(
-      http.get(`${process.env.LOCATION_API_URL}/cities`, ({ request }) => {
+      http.get(`${LOCATION_API_URL}/cities`, ({ request }) => {
         const url = new URL(request.url);
 
-        if (url.searchParams.get('query') === originCitySearchName) {
+        if (url.searchParams.get('query') === originCity.name) {
           return Response.json([originCity]);
         }
-        if (url.searchParams.get('query') === destinationCitySearchName) {
+        if (url.searchParams.get('query') === destinationCity.name) {
           return Response.json([destinationCity]);
         }
 
@@ -181,28 +152,25 @@ describe('Shipping', () => {
     const distanceInKilometers = 2133.1;
 
     interceptorServer.use(
-      http.get(
-        `${process.env.LOCATION_API_URL}/cities/distances`,
-        ({ request }) => {
-          const url = new URL(request.url);
+      http.get(`${LOCATION_API_URL}/cities/distances`, ({ request }) => {
+        const url = new URL(request.url);
 
-          if (
-            url.searchParams.get('originCityId') === originCity.id &&
-            url.searchParams.get('destinationCityId') === destinationCity.id
-          ) {
-            return Response.json({ kilometers: distanceInKilometers });
-          }
+        if (
+          url.searchParams.get('originCityId') === originCity.id &&
+          url.searchParams.get('destinationCityId') === destinationCity.id
+        ) {
+          return Response.json({ kilometers: distanceInKilometers });
+        }
 
-          return Response.json({ message: 'Not found' }, { status: 404 });
-        },
-      ),
+        return Response.json({ message: 'Not found' }, { status: 404 });
+      }),
     );
 
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: originCitySearchName,
-        destinationCityName: destinationCitySearchName,
+        originCityName: originCity.name,
+        destinationCityName: destinationCity.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -214,29 +182,15 @@ describe('Shipping', () => {
     });
   });
 
-  /**
-   * Teste 3: Deve retornar uma resposta de erro quando alguma cidade não foi
-   * encontrada.
-   */
-  test('case 3', async () => {
-    const originCitySearchName = 'São Paulo, SP';
-
-    const originCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
-      name: 'São Paulo',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
-
-    const destinationCitySearchName = 'Recife, PE';
+  test('caso 3: deve retornar uma resposta de erro quando alguma cidade não foi encontrada', async () => {
+    const originCity = cities.saoPaulo;
+    const destinationCity = cities.recife;
 
     interceptorServer.use(
-      http.get(`${process.env.LOCATION_API_URL}/cities`, ({ request }) => {
+      http.get(`${LOCATION_API_URL}/cities`, ({ request }) => {
         const url = new URL(request.url);
 
-        if (url.searchParams.get('query') === originCitySearchName) {
+        if (url.searchParams.get('query') === originCity.name) {
           return Response.json([originCity]);
         }
 
@@ -247,8 +201,8 @@ describe('Shipping', () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: originCitySearchName,
-        destinationCityName: destinationCitySearchName,
+        originCityName: originCity.name,
+        destinationCityName: destinationCity.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -259,16 +213,12 @@ describe('Shipping', () => {
     });
   });
 
-  /**
-   * Teste 4: Deve retornar uma resposta de erro quando não for possível
-   * utilizar a API de localização por um erro desconhecido.
-   */
-  test('case 4', async () => {
-    const originCitySearchName = 'São Paulo, SP';
-    const destinationCitySearchName = 'Recife, PE';
+  test('caso 4: deve retornar uma resposta de erro quando não for possível utilizar a API de localização por um erro desconhecido', async () => {
+    const originCity = cities.saoPaulo;
+    const destinationCity = cities.recife;
 
     interceptorServer.use(
-      http.get(`${process.env.LOCATION_API_URL}/cities`, () => {
+      http.get(`${LOCATION_API_URL}/cities`, () => {
         return Response.json(
           { message: 'Internal server error' },
           { status: 500 },
@@ -279,8 +229,8 @@ describe('Shipping', () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: originCitySearchName,
-        destinationCityName: destinationCitySearchName,
+        originCityName: originCity.name,
+        destinationCityName: destinationCity.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);

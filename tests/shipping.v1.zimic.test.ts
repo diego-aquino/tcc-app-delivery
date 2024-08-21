@@ -14,7 +14,9 @@ import app, { CalculateShippingQuery } from '../src/server/app';
 import { LocationSchema } from '../src/types/location.generated';
 import { LocationCity } from '../src/clients/LocationClient';
 
-httpInterceptor.default.onUnhandledRequest({ log: false });
+httpInterceptor.default.onUnhandledRequest({
+  log: false,
+});
 
 const locationInterceptor = httpInterceptor.create<LocationSchema>({
   type: 'local',
@@ -23,6 +25,25 @@ const locationInterceptor = httpInterceptor.create<LocationSchema>({
 });
 
 describe('Shipping', () => {
+  const cities = {
+    saoPaulo: {
+      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
+      name: 'São Paulo',
+      stateName: 'São Paulo',
+      stateCode: 'SP',
+      countryName: 'Brasil',
+      countryCode: 'BRA',
+    },
+    recife: {
+      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDI4NjQ3',
+      name: 'Recife',
+      stateName: 'Pernambuco',
+      stateCode: 'PE',
+      countryName: 'Brasil',
+      countryCode: 'BRA',
+    },
+  } satisfies Record<string, LocationCity>;
+
   beforeAll(async () => {
     await locationInterceptor.start();
 
@@ -51,15 +72,12 @@ describe('Shipping', () => {
     await locationInterceptor.stop();
   });
 
-  /**
-   * Exemplo (para habilitar, remova o `.skip`)
-   */
-  test.skip('example', async () => {
+  test.skip('exemplo', async () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: 'São Paulo, SP',
-        destinationCityName: 'Recife, PE',
+        originCityName: cities.saoPaulo.name,
+        destinationCityName: cities.recife.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -67,47 +85,18 @@ describe('Shipping', () => {
     expect(response.status).toBe(200);
   });
 
-  /**
-   * Teste 1: Deve retornar um frete gratuito quando as duas cidades estão no
-   * mesmo estado.
-   */
-  test('case 1', async () => {
-    const originCitySearchName = 'São Paulo, SP';
+  test('caso 1: deve retornar um frete gratuito quando as duas cidades estão no mesmo estado', async () => {
+    const originCity = cities.saoPaulo;
+    const destinationCity = originCity;
 
-    const originCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
-      name: 'São Paulo',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
-
-    const destinationCitySearchName = 'Campinas, SP';
-
-    const destinationCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5Mzgx',
-      name: 'Campinas',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
-
-    const originCityListHandler = locationInterceptor
+    const cityListHandler = locationInterceptor
       .get('/cities')
-      .with({ searchParams: { query: originCitySearchName } })
+      .with({
+        searchParams: { query: originCity.name },
+      })
       .respond({
         status: 200,
         body: [originCity],
-      });
-
-    const destinationCityListHandler = locationInterceptor
-      .get('/cities')
-      .with({ searchParams: { query: destinationCitySearchName } })
-      .respond({
-        status: 200,
-        body: [destinationCity],
       });
 
     const distanceInKilometers = 83.9;
@@ -128,8 +117,8 @@ describe('Shipping', () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: originCitySearchName,
-        destinationCityName: destinationCitySearchName,
+        originCityName: originCity.name,
+        destinationCityName: destinationCity.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -140,41 +129,19 @@ describe('Shipping', () => {
       costInCents: 0,
     });
 
-    expect(originCityListHandler.requests()).toHaveLength(1);
-    expect(destinationCityListHandler.requests()).toHaveLength(1);
+    expect(cityListHandler.requests()).toHaveLength(2);
     expect(distanceGetHandler.requests()).toHaveLength(1);
   });
 
-  /**
-   * Teste 2: Deve retornar o valor correto do frete entre duas cidades que não
-   * estão no mesmo estado.
-   */
-  test('case 2', async () => {
-    const originCitySearchName = 'São Paulo, SP';
-
-    const originCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
-      name: 'São Paulo',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
-
-    const destinationCitySearchName = 'Recife, PE';
-
-    const destinationCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDI4NjQ3',
-      name: 'Recife',
-      stateName: 'Pernambuco',
-      stateCode: 'PE',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
+  test('caso 2: deve retornar o valor correto do frete entre duas cidades que não estão no mesmo estado', async () => {
+    const originCity = cities.saoPaulo;
+    const destinationCity = cities.recife;
 
     const originCityListHandler = locationInterceptor
       .get('/cities')
-      .with({ searchParams: { query: originCitySearchName } })
+      .with({
+        searchParams: { query: originCity.name },
+      })
       .respond({
         status: 200,
         body: [originCity],
@@ -182,7 +149,9 @@ describe('Shipping', () => {
 
     const destinationCityListHandler = locationInterceptor
       .get('/cities')
-      .with({ searchParams: { query: destinationCitySearchName } })
+      .with({
+        searchParams: { query: destinationCity.name },
+      })
       .respond({
         status: 200,
         body: [destinationCity],
@@ -206,8 +175,8 @@ describe('Shipping', () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: originCitySearchName,
-        destinationCityName: destinationCitySearchName,
+        originCityName: originCity.name,
+        destinationCityName: destinationCity.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -223,27 +192,15 @@ describe('Shipping', () => {
     expect(distanceGetHandler.requests()).toHaveLength(1);
   });
 
-  /**
-   * Teste 3: Deve retornar uma resposta de erro quando alguma cidade não foi
-   * encontrada.
-   */
-  test('case 3', async () => {
-    const originCitySearchName = 'São Paulo, SP';
-
-    const originCity: LocationCity = {
-      id: 'aGVyZTpjbTpuYW1lZHBsYWNlOjIzMDM5MTc2',
-      name: 'São Paulo',
-      stateName: 'São Paulo',
-      stateCode: 'SP',
-      countryName: 'Brasil',
-      countryCode: 'BRA',
-    } satisfies LocationCity;
-
-    const destinationCitySearchName = 'Recife, PE';
+  test('caso 3: deve retornar uma resposta de erro quando alguma cidade não foi encontrada', async () => {
+    const originCity = cities.saoPaulo;
+    const destinationCity = cities.recife;
 
     const originCityListHandler = locationInterceptor
       .get('/cities')
-      .with({ searchParams: { query: originCitySearchName } })
+      .with({
+        searchParams: { query: originCity.name },
+      })
       .respond({
         status: 200,
         body: [originCity],
@@ -251,7 +208,9 @@ describe('Shipping', () => {
 
     const destinationCityListHandler = locationInterceptor
       .get('/cities')
-      .with({ searchParams: { query: destinationCitySearchName } })
+      .with({
+        searchParams: { query: destinationCity.name },
+      })
       .respond({
         status: 200,
         body: [],
@@ -267,8 +226,8 @@ describe('Shipping', () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: originCitySearchName,
-        destinationCityName: destinationCitySearchName,
+        originCityName: originCity.name,
+        destinationCityName: destinationCity.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -283,31 +242,16 @@ describe('Shipping', () => {
     expect(distanceGetHandler.requests()).toHaveLength(0);
   });
 
-  /**
-   * Teste 4: Deve retornar uma resposta de erro quando não for possível
-   * utilizar a API de localização por um erro desconhecido.
-   */
-  test('case 4', async () => {
-    const originCitySearchName = 'São Paulo, SP';
-    const destinationCitySearchName = 'Recife, PE';
+  test('caso 4: deve retornar uma resposta de erro quando não for possível utilizar a API de localização por um erro desconhecido', async () => {
+    const originCity = cities.saoPaulo;
+    const destinationCity = cities.recife;
 
-    const originCityListHandler = locationInterceptor
-      .get('/cities')
-      .with({ searchParams: { query: originCitySearchName } })
-      .respond({
-        status: 500,
-        body: { message: 'Internal server error' },
-      });
+    const errorCityListHandler = locationInterceptor.get('/cities').respond({
+      status: 500,
+      body: { message: 'Internal server error' },
+    });
 
-    const destinationCityListHandler = locationInterceptor
-      .get('/cities')
-      .with({ searchParams: { query: destinationCitySearchName } })
-      .respond({
-        status: 500,
-        body: { message: 'Internal server error' },
-      });
-
-    const distanceGetHandler = locationInterceptor
+    const errorDistanceGetHandler = locationInterceptor
       .get('/cities/distances')
       .respond({
         status: 500,
@@ -317,8 +261,8 @@ describe('Shipping', () => {
     const response = await supertest(app.server)
       .get('/shipping/calculate')
       .query({
-        originCityName: originCitySearchName,
-        destinationCityName: destinationCitySearchName,
+        originCityName: originCity.name,
+        destinationCityName: destinationCity.name,
         weightInKilograms: 10,
         volumeInLiters: 0.1,
       } satisfies CalculateShippingQuery);
@@ -328,8 +272,23 @@ describe('Shipping', () => {
       message: 'Internal server error',
     });
 
-    expect(originCityListHandler.requests()).toHaveLength(1);
-    expect(destinationCityListHandler.requests()).toHaveLength(1);
-    expect(distanceGetHandler.requests()).toHaveLength(0);
+    const errorCityListRequests = errorCityListHandler.requests();
+    expect(errorCityListRequests).toHaveLength(2);
+
+    const searchParams = errorCityListRequests
+      .map((request) => Object.fromEntries(request.searchParams))
+      .sort((params, otherParams) =>
+        params.query.localeCompare(otherParams.query),
+      );
+
+    type SearchParams =
+      LocationSchema['/cities']['GET']['request']['searchParams'];
+
+    expect(searchParams).toEqual<SearchParams[]>([
+      { query: destinationCity.name },
+      { query: originCity.name },
+    ]);
+
+    expect(errorDistanceGetHandler.requests()).toHaveLength(0);
   });
 });
