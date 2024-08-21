@@ -38,19 +38,19 @@ describe('Shipping', () => {
     console.log(response.body);
   });
 
-  test('caso 1: <descrição curta do teste>', async () => {
+  test('caso 1: <descrição>', async () => {
     // Implemente aqui...
   });
 
-  test('caso 2: <descrição curta do teste>', async () => {
+  test('caso 2: <descrição>', async () => {
     // Implemente aqui...
   });
 
-  test('caso 3: <descrição curta do teste>', async () => {
+  test('caso 3: <descrição>', async () => {
     // Implemente aqui...
   });
 
-  test('caso 4: <descrição curta do teste>', async () => {
+  test('caso 4: <descrição>', async () => {
     // Implemente aqui...
   });
 });
