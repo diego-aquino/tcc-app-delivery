@@ -23,7 +23,7 @@ export async function loadPlugins() {
       displayRequestDuration: true,
     },
     theme: {
-      title: 'App de Entregas',
+      title: 'Sistema de Entregas',
       css: [
         {
           filename: 'custom.css',
