@@ -11,6 +11,7 @@ git rebase main-v1
 git push --force
 
 git checkout main
+git push
 
 cd ../api-mocking-app-delivery
 
