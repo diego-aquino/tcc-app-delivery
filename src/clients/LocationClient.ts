@@ -25,7 +25,7 @@ class LocationClient {
   async searchCities(query: string) {
     const response = await this.api.get<LocationCity[]>('/cities', {
       params: {
-        query,
+        // query,
       },
     });
 
